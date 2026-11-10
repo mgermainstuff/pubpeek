@@ -1,0 +1,22 @@
+name: windows-edge-test
+on: workflow_dispatch
+jobs:
+  test:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install test driver (uses the Edge already on the machine)
+        working-directory: .github/wintest
+        run: npm init -y && npm install playwright-core@1.48.2
+      - name: Run PubPeek in Edge on Windows
+        working-directory: .github/wintest
+        run: node test.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results
+          path: .github/wintest/out
