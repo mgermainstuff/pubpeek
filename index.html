@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PubPeek — open and convert Publisher files</title>
+<meta name="description" content="Open, print and convert Microsoft Publisher (.pub) files to PDF or images. Files never leave your computer.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#0f5c5c">
+<style>
+:root{--ink:#16302f;--teal:#0f5c5c;--teal2:#0b4747;--paper:#f3f1ec;--line:#d9d5cc;--warn:#8a5a00}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font:15px/1.45 "Segoe UI",system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--paper);display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--teal);color:#fff;flex-wrap:wrap}
+header h1{font-size:17px;margin:0 10px 0 0;font-weight:650;letter-spacing:.2px}
+button{font:inherit;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer}
+button:hover:not(:disabled){background:rgba(255,255,255,.24)}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible,a:focus-visible{outline:2px solid #ffd166;outline-offset:2px}
+button.primary{background:#fff;color:var(--teal2);border-color:#fff;font-weight:600}
+#docname{margin-left:auto;font-size:13px;opacity:.9;max-width:38ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#notice{display:none;padding:7px 12px;background:#fff6dc;color:var(--warn);border-bottom:1px solid #ecd9a0;font-size:13.5px}
+#upsell{display:none;padding:7px 12px;background:#e4f1ef;border-bottom:1px solid #bcd8d4;font-size:13.5px}
+#upsell a{color:var(--teal2);font-weight:600}
+main{flex:1;overflow:auto;padding:18px 12px 40px}
+#drop{max-width:560px;margin:8vh auto 0;border:2px dashed #a9b8b5;border-radius:14px;padding:38px 26px;text-align:center;background:#fff}
+#drop.over{border-color:var(--teal);background:#eef7f5}
+#drop h2{margin:0 0 6px;font-size:22px}
+#drop p{margin:6px 0;color:#476461}
+#drop .big{margin-top:16px;background:var(--teal);border-color:var(--teal);font-size:16px;padding:10px 20px}
+#drop small{display:block;margin-top:16px;color:#6b817e}
+#pages{display:flex;flex-direction:column;align-items:center;gap:18px}
+.page{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25),0 6px 18px rgba(0,0,0,.10);max-width:100%}
+.page svg{display:block;width:100%;height:auto}
+.pnum{font-size:12px;color:#6b817e;margin-top:-12px}
+#busy{position:fixed;inset:0;background:rgba(243,241,236,.85);display:none;align-items:center;justify-content:center;font-size:17px;z-index:9}
+#print{display:none}
+@media print{
+  header,#notice,#upsell,main,#busy{display:none!important}
+  body{background:#fff;display:block;height:auto}
+  #print{display:block}
+  #print .pp{page-break-after:always;break-after:page;overflow:hidden}
+  #print .pp:last-child{page-break-after:auto;break-after:auto}
+  #print svg{display:block;width:100%;height:100%}
+}
+</style>
+<style id="textcss"></style>
+<style id="pagecss"></style>
+</head>
+<body>
+<header>
+  <h1>PubPeek</h1>
+  <button id="bOpen" class="primary">Open .pub file</button>
+  <button id="bPrint" disabled>Print</button>
+  <button id="bPdf" disabled>Save as PDF</button>
+  <button id="bPng" disabled>Save pages as images</button>
+  <button id="bBatch">Convert many files…</button>
+  <span id="docname"></span>
+</header>
+<div id="upsell">Free preview: saved files carry a small “PubPeek preview” mark. <span id="storeMsg">The full version (clean PDFs, unlimited batch conversion) is coming to the Microsoft Store.</span> <a href="privacy.html">Privacy</a></div>
+<div id="notice"></div>
+<main id="main">
+  <div id="drop">
+    <h2>Open a Publisher file</h2>
+    <p>See it, print it, or save it as a PDF or images — without Microsoft Publisher.</p>
+    <button id="bOpen2" class="big">Choose a .pub file</button>
+    <p>or drag a file onto this window</p>
+    <small>Your files are read on this computer only. Nothing is uploaded.</small>
+  </div>
+  <div id="pages"></div>
+</main>
+<div id="busy"><span id="busyText">Working…</span></div>
+<div id="print"></div>
+<div id="measure" aria-hidden="true" style="position:absolute;left:-100000px;top:0;visibility:hidden"></div>
+<input id="file" type="file" accept=".pub" hidden>
+<input id="files" type="file" accept=".pub" multiple hidden>
+<script src="pubengine.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
