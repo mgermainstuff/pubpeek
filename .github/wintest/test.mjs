@@ -100,6 +100,8 @@ try {
     await page.screenshot({ path: 'out/99-batch.png' });
   } catch (e) { report.batch = { error: String(e).slice(0, 200) }; }
 } catch (e) { report.fatal = String(e).slice(0, 400); }
-await browser.close();
 fs.writeFileSync('out/report.json', JSON.stringify(report, null, 2));
 console.log(JSON.stringify(report, null, 2));
+process.on('unhandledRejection', () => {}); process.on('uncaughtException', () => { process.exit(0); });
+try { await browser.close(); } catch (e) {}
+process.exit(0);
