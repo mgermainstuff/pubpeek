@@ -100,6 +100,17 @@ try {
     await page.screenshot({ path: 'out/99-batch.png' });
   } catch (e) { report.batch = { error: String(e).slice(0, 200) }; }
 } catch (e) { report.fatal = String(e).slice(0, 400); }
+// Store listing screenshots: the full-version look (as installed from the Store), using only a plain shapes test file
+try {
+  const c2 = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+  await c2.addInitScript(() => { try { localStorage.setItem('pp_full', '1'); } catch (e) {} });
+  const p2 = await c2.newPage();
+  await p2.goto(URL, { waitUntil: 'networkidle' });
+  await p2.screenshot({ path: 'out/store-1-start.png' });
+  const shapes = have.find((x) => x[0] === 'shapes');
+  if (shapes) { await p2.setInputFiles('#file', shapes[1]); await p2.waitForFunction(() => window.__pp.doc, null, { timeout: 60000 }); await sleep(800); await p2.screenshot({ path: 'out/store-2-open.png' }); }
+  await c2.close();
+} catch (e) { report.shots = String(e).slice(0, 200); }
 fs.writeFileSync('out/report.json', JSON.stringify(report, null, 2));
 console.log(JSON.stringify(report, null, 2));
 process.on('unhandledRejection', () => {}); process.on('uncaughtException', () => { process.exit(0); });
